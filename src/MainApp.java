@@ -4,7 +4,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 import service.ProductoService;
 import service.UsuarioService;
 import service.PedidoService;
@@ -16,9 +17,25 @@ public class MainApp extends Application {
 
         VBox root = new VBox(10);
 
-        Button btnProductos = new Button("Ver Productos");
-        Button btnUsuarios = new Button("Ver Usuarios");
-        Button btnPedidos = new Button("Ver Pedidos");
+        root.setSpacing(15);
+        root.setStyle(
+                "-fx-padding: 20;" +
+                        "-fx-alignment: center;"
+        );
+
+
+        Label titulo = new Label("CompraYa");
+        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
+        Button btnProductos = new Button("📦 Ver Productos");
+        Button btnUsuarios = new Button("👤 Ver Usuarios");
+        Button btnPedidos = new Button("🛒 Ver Pedidos");
+        Button btnRegistrarUsuario = new Button("➕ Registrar Usuario");
+
+        btnRegistrarUsuario.setPrefWidth(200);
+        btnProductos.setPrefWidth(200);
+        btnUsuarios.setPrefWidth(200);
+        btnPedidos.setPrefWidth(200);
 
         // PRODUCTOS
         btnProductos.setOnAction(e -> {
@@ -95,13 +112,60 @@ public class MainApp extends Application {
             ventana.show();
         });
 
+        btnRegistrarUsuario.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootRegistro = new VBox(10);
+            rootRegistro.setStyle("-fx-padding: 15;");
+
+            TextField txtNombre = new TextField();
+            txtNombre.setPromptText("Nombre");
+
+            TextField txtEmail = new TextField();
+            txtEmail.setPromptText("Email");
+
+            PasswordField txtPassword = new PasswordField();
+            txtPassword.setPromptText("Password");
+
+            Button btnGuardar = new Button("Guardar Usuario");
+
+            btnGuardar.setOnAction(ev -> {
+
+                UsuarioService service = new UsuarioService();
+
+                service.registrarUsuario(
+                        txtNombre.getText(),
+                        txtEmail.getText(),
+                        txtPassword.getText()
+                );
+
+                ventana.close();
+            });
+
+            rootRegistro.getChildren().addAll(
+                    txtNombre,
+                    txtEmail,
+                    txtPassword,
+                    btnGuardar
+            );
+
+            Scene scene = new Scene(rootRegistro, 300, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Registrar Usuario");
+            ventana.show();
+        });
+
         root.getChildren().addAll(
+                titulo,
+                btnRegistrarUsuario,
                 btnProductos,
                 btnUsuarios,
                 btnPedidos
         );
 
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 600, 400);
 
         stage.setTitle("CompraYa");
         stage.setScene(scene);
