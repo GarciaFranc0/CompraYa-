@@ -57,4 +57,37 @@ public class UsuarioService {
             e.printStackTrace();
         }
     }
+
+    public String obtenerUsuarios() {
+
+        StringBuilder usuarios = new StringBuilder();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM usuarios";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                usuarios.append(
+                        rs.getInt("id")
+                                + " - "
+                                + rs.getString("nombre")
+                                + " - "
+                                + rs.getString("email")
+                                + "\n"
+                );
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usuarios.toString();
+    }
 }

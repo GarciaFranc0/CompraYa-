@@ -4,8 +4,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import service.ProductoService;
 import service.UsuarioService;
+import service.PedidoService;
 
 public class MainApp extends Application {
 
@@ -18,6 +20,7 @@ public class MainApp extends Application {
         Button btnUsuarios = new Button("Ver Usuarios");
         Button btnPedidos = new Button("Ver Pedidos");
 
+        // PRODUCTOS
         btnProductos.setOnAction(e -> {
 
             ProductoService service = new ProductoService();
@@ -26,26 +29,70 @@ public class MainApp extends Application {
 
             VBox rootProductos = new VBox(10);
 
-            Label productos = new Label(
-                    service.obtenerProductos()
-            );
+            Label lblProductos =
+                    new Label(service.obtenerProductos());
 
-            rootProductos.getChildren().add(productos);
+            lblProductos.setWrapText(true);
 
-            Scene sceneProductos = new Scene(
-                    rootProductos,
-                    400,
-                    300
-            );
+            rootProductos.getChildren().add(lblProductos);
+
+            Scene sceneProductos =
+                    new Scene(rootProductos, 500, 300);
 
             ventana.setScene(sceneProductos);
             ventana.setTitle("Productos");
             ventana.show();
         });
 
+        // USUARIOS
         btnUsuarios.setOnAction(e -> {
+
+            System.out.println("ENTRO AL BOTON");
+
             UsuarioService service = new UsuarioService();
-            service.listarUsuarios();
+
+            String texto = service.obtenerUsuarios();
+
+            System.out.println("DEVUELVE:");
+            System.out.println(texto);
+
+            Stage ventana = new Stage();
+
+            VBox rootUsuarios = new VBox(10);
+
+            Label lblUsuarios = new Label(texto);
+
+            rootUsuarios.getChildren().add(lblUsuarios);
+
+            Scene sceneUsuarios = new Scene(rootUsuarios, 500, 300);
+
+            ventana.setScene(sceneUsuarios);
+            ventana.setTitle("Usuarios");
+            ventana.show();
+        });
+
+        // PEDIDOS
+        btnPedidos.setOnAction(e -> {
+
+            PedidoService service = new PedidoService();
+
+            Stage ventana = new Stage();
+
+            VBox rootPedidos = new VBox(10);
+
+            Label lblPedidos =
+                    new Label(service.obtenerPedidos());
+
+            lblPedidos.setWrapText(true);
+
+            rootPedidos.getChildren().add(lblPedidos);
+
+            Scene scenePedidos =
+                    new Scene(rootPedidos, 500, 300);
+
+            ventana.setScene(scenePedidos);
+            ventana.setTitle("Pedidos");
+            ventana.show();
         });
 
         root.getChildren().addAll(
