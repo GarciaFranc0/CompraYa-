@@ -230,6 +230,27 @@ public class ProductoService {
         }
     }
 
+    public int contarProductos(){
+
+        try{
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT COUNT(*) FROM productos";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
     public Producto buscarPorId(int id) {
 
         try {

@@ -2,7 +2,6 @@ package service;
 
 import database.Conexion;
 import models.Pedido;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -191,4 +190,47 @@ public class PedidoService {
 
         return pedidos;
     }
+
+    public void actualizarEstadoPedido(int idPedido, String estado){
+
+        try{
+            Connection con = Conexion.conectar();
+
+            String sql =
+                    "UPDATE pedidos SET estado = ? WHERE id = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, estado);
+            ps.setInt(2, idPedido);
+
+            ps.executeUpdate();
+
+            con.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public int contarPedidos(){
+
+        try{
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT COUNT(*) FROM pedidos";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            if(rs.next()){
+                return rs.getInt(1);
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
 }

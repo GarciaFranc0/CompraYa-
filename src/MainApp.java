@@ -9,14 +9,12 @@ import service.UsuarioService;
 import service.PedidoService;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.collections.FXCollections;
 import models.Usuario;
 import models.Pedido;
-import models.Producto;
 
 import java.util.List;
 
@@ -105,6 +103,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootRegistro, 300, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Registrarse");
             ventana.show();
@@ -114,10 +116,16 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(rootLogin, 300, 200);
 
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
+
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.show();
 
+        btnLogin.setPrefWidth(200);
+        btnRegistrarse.setPrefWidth(200);
 
     }
 
@@ -128,7 +136,29 @@ public class MainApp extends Application {
         root.setSpacing(15);
         root.setStyle("-fx-padding: 20;" + "-fx-alignment: center;");
 
+        UsuarioService usuarioService = new UsuarioService();
+        ProductoService productoService = new ProductoService();
+        PedidoService pedidoService = new PedidoService();
+
+        Label lblUsuarios =
+                new Label("Usuarios: " +
+                        usuarioService.contarUsuarios());
+
+        Label lblProductos =
+                new Label("Productos: " +
+                        productoService.contarProductos());
+
+        Label lblPedidos =
+                new Label("Pedidos: " +
+                        pedidoService.contarPedidos());
+
         Label titulo = new Label("CompraYa");
+        titulo.setStyle(
+                "-fx-font-size: 28px;" +
+                        "-fx-font-weight: bold;"
+        );
+        Label lblAdmin = new Label("Administrador: " + emailLogueado);
+
 
         Button btnModuloUsuarios = new Button("👤 Usuarios");
         Button btnModuloProductos = new Button("📦 Productos");
@@ -137,6 +167,8 @@ public class MainApp extends Application {
         Button btnProductos = new Button("📦 Ver Productos");
         Button btnUsuarios = new Button("👤 Ver Usuarios");
         Button btnPedidos = new Button("🛒 Ver Pedidos");
+        Button btnCerrarSesion = new Button("Cerrar Sesión");
+        btnCerrarSesion.setPrefWidth(200);
 
         Button btnRegistrarUsuario = new Button("➕ Registrar Usuario");
         Button btnAgregarProducto = new Button("➕ Agregar Producto");
@@ -145,6 +177,7 @@ public class MainApp extends Application {
         Button btnEliminarUsuario = new Button("🗑 Eliminar Usuario");
         Button btnEditarProducto = new Button("✏ Editar Producto");
         Button btnEditarUsuario = new Button("✏ Editar Usuario");
+        Button btnCambiarEstadoPedido = new Button("🚚 Cambiar Estado Pedido");
 
 
         btnEditarUsuario.setPrefWidth(200);
@@ -158,6 +191,7 @@ public class MainApp extends Application {
         btnUsuarios.setPrefWidth(200);
         btnPedidos.setPrefWidth(200);
 
+
         btnModuloUsuarios.setOnAction(e -> {
 
             Stage ventana = new Stage();
@@ -168,6 +202,10 @@ public class MainApp extends Application {
             rootUsuarios.getChildren().addAll(btnUsuarios, btnRegistrarUsuario, btnEditarUsuario, btnEliminarUsuario);
 
             Scene scene = new Scene(rootUsuarios, 300, 250);
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
 
             ventana.setScene(scene);
             ventana.setTitle("Gestión de Usuarios");
@@ -185,6 +223,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootProductos, 300, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Gestión de Productos");
             ventana.show();
@@ -197,9 +239,13 @@ public class MainApp extends Application {
             VBox rootPedidos = new VBox(10);
             rootPedidos.setStyle("-fx-padding: 20;" + "-fx-alignment: center;");
 
-            rootPedidos.getChildren().addAll(btnPedidos, btnCrearPedido);
+            rootPedidos.getChildren().addAll(btnPedidos, btnCrearPedido, btnCambiarEstadoPedido);
 
             Scene scene = new Scene(rootPedidos, 300, 200);
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
 
             ventana.setScene(scene);
             ventana.setTitle("Gestión de Pedidos");
@@ -238,6 +284,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootProductos, 700, 400);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Productos");
             ventana.show();
@@ -270,6 +320,10 @@ public class MainApp extends Application {
             rootUsuarios.getChildren().add(tabla);
 
             Scene sceneUsuarios = new Scene(rootUsuarios, 600, 400);
+
+            sceneUsuarios.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
 
             ventana.setScene(sceneUsuarios);
             ventana.setTitle("Usuarios");
@@ -312,6 +366,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootPedidos, 800, 400);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Pedidos");
             ventana.show();
@@ -352,9 +410,99 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootRegistro, 300, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Registrar Usuario");
             ventana.show();
+        });
+
+        btnCambiarEstadoPedido.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEstado = new VBox(10);
+            rootEstado.setStyle("-fx-padding: 15;");
+
+            PedidoService service = new PedidoService();
+
+            ComboBox<String> cmbPedidos = new ComboBox<>();
+
+            for(Pedido p : service.obtenerPedidosTabla()){
+                cmbPedidos.getItems().add(
+                        p.getId() + " - " +
+                                p.getNombreProducto()
+                );
+            }
+
+            ComboBox<String> cmbEstado = new ComboBox<>();
+
+            cmbEstado.getItems().addAll(
+                    "Pendiente",
+                    "Enviado",
+                    "Entregado"
+            );
+
+            Button btnActualizar =
+                    new Button("Actualizar Estado");
+
+            btnActualizar.setOnAction(ev -> {
+
+                String seleccionado =
+                        cmbPedidos.getValue();
+
+                int idPedido = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                String estado =
+                        cmbEstado.getValue();
+
+                service.actualizarEstadoPedido(
+                        idPedido,
+                        estado
+                );
+
+                Alert alert = new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+
+                alert.setContentText(
+                        "Estado actualizado"
+                );
+
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEstado.getChildren().addAll(
+                    cmbPedidos,
+                    cmbEstado,
+                    btnActualizar
+            );
+
+            Scene scene = new Scene(rootEstado, 350, 200);
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
+            ventana.setScene(scene);
+            ventana.setTitle("Cambiar Estado");
+            ventana.show();
+        });
+
+        btnCerrarSesion.setOnAction(e -> {
+
+            try {
+                start(stage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
         });
 
         btnAgregarProducto.setOnAction(e -> {
@@ -393,6 +541,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootProducto, 300, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Agregar Producto");
             ventana.show();
@@ -404,9 +556,6 @@ public class MainApp extends Application {
 
             VBox rootPedido = new VBox(10);
             rootPedido.setStyle("-fx-padding: 15;");
-
-            UsuarioService usuarioService = new UsuarioService();
-            ProductoService productoService = new ProductoService();
 
             ComboBox<String> cmbUsuarios = new ComboBox<>();
             cmbUsuarios.setPromptText("Seleccionar Usuario");
@@ -449,6 +598,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootPedido, 300, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Crear Pedido");
             ventana.show();
@@ -490,6 +643,10 @@ public class MainApp extends Application {
             rootEliminar.getChildren().addAll(cmbUsuarios, btnEliminar);
 
             Scene scene = new Scene(rootEliminar, 300, 150);
+
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
 
             ventana.setScene(scene);
             ventana.setTitle("Eliminar Usuario");
@@ -542,6 +699,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootEditar, 350, 250);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Editar Producto");
             ventana.show();
@@ -593,6 +754,10 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootEditar, 350, 300);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Editar Usuario");
             ventana.show();
@@ -637,15 +802,23 @@ public class MainApp extends Application {
 
             Scene scene = new Scene(rootEliminar, 300, 150);
 
+            scene.getStylesheets().add(
+                    getClass().getResource("/style.css").toExternalForm()
+            );
+
             ventana.setScene(scene);
             ventana.setTitle("Eliminar Producto");
             ventana.show();
 
         });
 
-        root.getChildren().addAll(titulo, btnModuloUsuarios, btnModuloProductos, btnModuloPedidos);
+        root.getChildren().addAll(titulo, lblAdmin, lblUsuarios, lblProductos, lblPedidos, btnModuloUsuarios, btnModuloProductos, btnModuloPedidos, btnCerrarSesion);
 
         Scene scene = new Scene(root, 600, 400);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
 
         stage.setTitle("CompraYa");
         stage.setScene(scene);
@@ -660,6 +833,8 @@ public class MainApp extends Application {
         );
 
         Label titulo = new Label("🛒 CompraYa");
+        Label lblUsuario = new Label("Bienvenido: " + emailLogueado);
+
 
         titulo.setStyle(
                 "-fx-font-size: 28px;" +
@@ -669,6 +844,7 @@ public class MainApp extends Application {
         Button btnProductos = new Button("📦 Ver Productos");
         Button btnCrearPedido = new Button("🛒 Crear Pedido");
         Button btnMisPedidos = new Button("📋 Mis Pedidos");
+        Button btnCerrarSesion = new Button("Cerrar Sesión");
 
         btnProductos.setPrefWidth(200);
         btnCrearPedido.setPrefWidth(200);
@@ -677,15 +853,22 @@ public class MainApp extends Application {
         btnProductos.setOnAction(e -> mostrarProductos());
         btnCrearPedido.setOnAction(e -> mostrarCrearPedido());
         btnMisPedidos.setOnAction(e -> mostrarMisPedidos());
+        btnCerrarSesion.setOnAction(e -> {start(stage);});
 
         root.getChildren().addAll(
                 titulo,
+                lblUsuario,
                 btnProductos,
                 btnCrearPedido,
-                btnMisPedidos
+                btnMisPedidos,
+                btnCerrarSesion
         );
 
         Scene scene = new Scene(root, 500, 350);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
 
         stage.setTitle("CompraYa - Cliente");
         stage.setScene(scene);
@@ -721,6 +904,10 @@ public class MainApp extends Application {
         rootProductos.getChildren().add(tabla);
 
         Scene scene = new Scene(rootProductos, 700, 400);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
 
         ventana.setScene(scene);
         ventana.setTitle("Productos");
@@ -799,6 +986,10 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(rootPedido, 300, 250);
 
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
+
         ventana.setScene(scene);
         ventana.setTitle("Crear Pedido");
         ventana.show();
@@ -861,6 +1052,10 @@ public class MainApp extends Application {
         root.getChildren().add(tabla);
 
         Scene scene = new Scene(root, 700, 400);
+
+        scene.getStylesheets().add(
+                getClass().getResource("/style.css").toExternalForm()
+        );
 
         ventana.setScene(scene);
         ventana.setTitle("Mis Pedidos");
