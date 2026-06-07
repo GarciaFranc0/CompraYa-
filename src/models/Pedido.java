@@ -7,6 +7,8 @@ public class Pedido {
     private int productoId;
     private int cantidad;
     private String estado;
+    private String nombreUsuario;
+    private String nombreProducto;
 
     public Pedido() {
     }
@@ -57,6 +59,22 @@ public class Pedido {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
     @Override

@@ -1,11 +1,14 @@
 package service;
 
 import database.Conexion;
+import models.Pedido;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PedidoService {
     public void crearPedido(int idUsuario, int idProducto, int cantidad) {
@@ -101,5 +104,48 @@ public class PedidoService {
         }
 
         return pedidos.toString();
+    }
+
+    public List<Pedido> obtenerPedidosTabla() {
+
+        List<Pedido> pedidos = new ArrayList<>();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = """
+            SELECT p.id,
+                u.nombre AS usuario,
+                pr.nombre AS producto,
+                p.cantidad,
+                p.estado
+            FROM pedidos p
+            JOIN usuarios u ON p.id_usuario = u.id
+            JOIN productos pr ON p.id_producto = pr.id
+            """;
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                Pedido pedido = new Pedido();
+
+                pedido.setId(rs.getInt("id"));
+                pedido.setNombreUsuario(rs.getString("usuario"));
+                pedido.setNombreProducto(rs.getString("producto"));
+                pedido.setCantidad(rs.getInt("cantidad"));
+                pedido.setEstado(rs.getString("estado"));
+
+                pedidos.add(pedido);
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pedidos;
     }
 }

@@ -3,11 +3,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.Producto;
 import service.ProductoService;
 import service.UsuarioService;
 import service.PedidoService;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.collections.FXCollections;
+import models.Usuario;
+import models.Pedido;
 
 
 public class MainApp extends Application {
@@ -35,7 +43,9 @@ public class MainApp extends Application {
         Button btnCrearPedido = new Button("➕ Crear Pedido");
         Button btnEliminarProducto = new Button("🗑 Eliminar Producto");
         Button btnEliminarUsuario = new Button("🗑 Eliminar Usuario");
+        Button btnEditarProducto = new Button("✏ Editar Producto");
 
+        btnEditarProducto.setPrefWidth(200);
         btnEliminarUsuario.setPrefWidth(200);
         btnEliminarProducto.setPrefWidth(200);
         btnCrearPedido.setPrefWidth(200);
@@ -54,17 +64,50 @@ public class MainApp extends Application {
 
             VBox rootProductos = new VBox(10);
 
-            Label lblProductos =
-                    new Label(service.obtenerProductos());
+            TableView<Producto> tabla = new TableView<>();
 
-            lblProductos.setWrapText(true);
+            TableColumn<Producto, Integer> colId =
+                    new TableColumn<>("ID");
+            colId.setCellValueFactory(
+                    new PropertyValueFactory<>("id")
+            );
 
-            rootProductos.getChildren().add(lblProductos);
+            TableColumn<Producto, String> colNombre =
+                    new TableColumn<>("Nombre");
+            colNombre.setCellValueFactory(
+                    new PropertyValueFactory<>("nombre")
+            );
 
-            Scene sceneProductos =
-                    new Scene(rootProductos, 500, 300);
+            TableColumn<Producto, Double> colPrecio =
+                    new TableColumn<>("Precio");
+            colPrecio.setCellValueFactory(
+                    new PropertyValueFactory<>("precio")
+            );
 
-            ventana.setScene(sceneProductos);
+            TableColumn<Producto, Integer> colStock =
+                    new TableColumn<>("Stock");
+            colStock.setCellValueFactory(
+                    new PropertyValueFactory<>("stock")
+            );
+
+            tabla.getColumns().addAll(
+                    colId,
+                    colNombre,
+                    colPrecio,
+                    colStock
+            );
+
+            tabla.setItems(
+                    FXCollections.observableArrayList(
+                            service.obtenerProductosTabla()
+                    )
+            );
+
+            rootProductos.getChildren().add(tabla);
+
+            Scene scene = new Scene(rootProductos, 700, 400);
+
+            ventana.setScene(scene);
             ventana.setTitle("Productos");
             ventana.show();
         });
@@ -72,24 +115,44 @@ public class MainApp extends Application {
         // USUARIOS
         btnUsuarios.setOnAction(e -> {
 
-            System.out.println("ENTRO AL BOTON");
-
             UsuarioService service = new UsuarioService();
-
-            String texto = service.obtenerUsuarios();
-
-            System.out.println("DEVUELVE:");
-            System.out.println(texto);
 
             Stage ventana = new Stage();
 
             VBox rootUsuarios = new VBox(10);
 
-            Label lblUsuarios = new Label(texto);
+            TableView<Usuario> tabla = new TableView<>();
 
-            rootUsuarios.getChildren().add(lblUsuarios);
+            TableColumn<Usuario, Integer> colId = new TableColumn<>("ID");
+            colId.setCellValueFactory(
+                    new PropertyValueFactory<>("id")
+            );
 
-            Scene sceneUsuarios = new Scene(rootUsuarios, 500, 300);
+            TableColumn<Usuario, String> colNombre = new TableColumn<>("Nombre");
+            colNombre.setCellValueFactory(
+                    new PropertyValueFactory<>("nombre")
+            );
+
+            TableColumn<Usuario, String> colEmail = new TableColumn<>("Email");
+            colEmail.setCellValueFactory(
+                    new PropertyValueFactory<>("email")
+            );
+
+            tabla.getColumns().addAll(
+                    colId,
+                    colNombre,
+                    colEmail
+            );
+
+            tabla.setItems(
+                    FXCollections.observableArrayList(
+                            service.obtenerUsuariosTabla()
+                    )
+            );
+
+            rootUsuarios.getChildren().add(tabla);
+
+            Scene sceneUsuarios = new Scene(rootUsuarios, 600, 400);
 
             ventana.setScene(sceneUsuarios);
             ventana.setTitle("Usuarios");
@@ -105,17 +168,59 @@ public class MainApp extends Application {
 
             VBox rootPedidos = new VBox(10);
 
-            Label lblPedidos =
-                    new Label(service.obtenerPedidos());
+            TableView<Pedido> tabla = new TableView<>();
 
-            lblPedidos.setWrapText(true);
+            TableColumn<Pedido, Integer> colId =
+                    new TableColumn<>("ID");
+            colId.setCellValueFactory(
+                    new PropertyValueFactory<>("id")
+            );
 
-            rootPedidos.getChildren().add(lblPedidos);
+            TableColumn<Pedido, String> colUsuario =
+                    new TableColumn<>("Usuario");
 
-            Scene scenePedidos =
-                    new Scene(rootPedidos, 500, 300);
+            colUsuario.setCellValueFactory(
+                    new PropertyValueFactory<>("nombreUsuario")
+            );
 
-            ventana.setScene(scenePedidos);
+            TableColumn<Pedido, String> colProducto =
+                    new TableColumn<>("Producto");
+
+            colProducto.setCellValueFactory(
+                    new PropertyValueFactory<>("nombreProducto")
+            );
+
+            TableColumn<Pedido, Integer> colCantidad =
+                    new TableColumn<>("Cantidad");
+            colCantidad.setCellValueFactory(
+                    new PropertyValueFactory<>("cantidad")
+            );
+
+            TableColumn<Pedido, String> colEstado =
+                    new TableColumn<>("Estado");
+            colEstado.setCellValueFactory(
+                    new PropertyValueFactory<>("estado")
+            );
+
+            tabla.getColumns().addAll(
+                    colId,
+                    colUsuario,
+                    colProducto,
+                    colCantidad,
+                    colEstado
+            );
+
+            tabla.setItems(
+                    FXCollections.observableArrayList(
+                            service.obtenerPedidosTabla()
+                    )
+            );
+
+            rootPedidos.getChildren().add(tabla);
+
+            Scene scene = new Scene(rootPedidos, 800, 400);
+
+            ventana.setScene(scene);
             ventana.setTitle("Pedidos");
             ventana.show();
         });
@@ -292,52 +397,6 @@ public class MainApp extends Application {
             ventana.show();
         });
 
-        btnEliminarProducto.setOnAction(e -> {
-
-            Stage ventana = new Stage();
-
-            VBox rootEliminar = new VBox(10);
-            rootEliminar.setStyle("-fx-padding: 15;");
-
-            ComboBox<String> cmbProductos = new ComboBox<>();
-            ProductoService service = new ProductoService();
-            cmbProductos.getItems().addAll(
-                    service.obtenerProductosLista()
-            );
-
-            Button btnEliminar = new Button("Eliminar");
-
-            btnEliminar.setOnAction(ev -> {
-
-                String seleccionado = cmbProductos.getValue();
-
-                int id = Integer.parseInt(
-                        seleccionado.split(" - ")[0]
-                );
-
-                service.eliminarProducto(id);
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
-                alert.setContentText("Producto eliminado correctamente");
-                alert.showAndWait();
-
-                ventana.close();
-            });
-
-            rootEliminar.getChildren().addAll(
-                    cmbProductos,
-                    btnEliminar
-            );
-
-            Scene scene = new Scene(rootEliminar, 300, 150);
-
-            ventana.setScene(scene);
-            ventana.setTitle("Eliminar Producto");
-            ventana.show();
-        });
-
         btnEliminarUsuario.setOnAction(e -> {
 
             Stage ventana = new Stage();
@@ -387,9 +446,127 @@ public class MainApp extends Application {
             ventana.show();
         });
 
+        btnEliminarUsuario.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEliminar = new VBox(10);
+            rootEliminar.setStyle("-fx-padding: 15;");
+
+            UsuarioService service = new UsuarioService();
+
+            ComboBox<String> cmbUsuarios = new ComboBox<>();
+            cmbUsuarios.setPromptText("Seleccionar Usuario");
+
+            cmbUsuarios.getItems().addAll(
+                    service.obtenerUsuariosLista()
+            );
+
+            Button btnEliminar = new Button("Eliminar Usuario");
+
+            btnEliminar.setOnAction(ev -> {
+
+                String seleccionado = cmbUsuarios.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.eliminarUsuario(id);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Usuario eliminado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+
+
+            rootEliminar.getChildren().addAll(
+                    cmbUsuarios,
+                    btnEliminar
+            );
+
+            Scene scene = new Scene(rootEliminar, 300, 150);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Eliminar Usuario");
+            ventana.show();
+        });
+
+        btnEditarProducto.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEditar = new VBox(10);
+            rootEditar.setStyle("-fx-padding: 15;");
+
+            ProductoService service = new ProductoService();
+
+            ComboBox<String> cmbProductos = new ComboBox<>();
+            cmbProductos.setPromptText("Seleccionar Producto");
+
+            cmbProductos.getItems().addAll(
+                    service.obtenerProductosLista()
+            );
+
+            TextField txtNombre = new TextField();
+            txtNombre.setPromptText("Nuevo Nombre");
+
+            TextField txtPrecio = new TextField();
+            txtPrecio.setPromptText("Nuevo Precio");
+
+            TextField txtStock = new TextField();
+            txtStock.setPromptText("Nuevo Stock");
+
+            Button btnGuardar = new Button("Guardar Cambios");
+
+            btnGuardar.setOnAction(ev -> {
+
+                String seleccionado = cmbProductos.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.editarProducto(
+                        id,
+                        txtNombre.getText(),
+                        Double.parseDouble(txtPrecio.getText()),
+                        Integer.parseInt(txtStock.getText())
+                );
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Producto actualizado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEditar.getChildren().addAll(
+                    cmbProductos,
+                    txtNombre,
+                    txtPrecio,
+                    txtStock,
+                    btnGuardar
+            );
+
+            Scene scene = new Scene(rootEditar, 350, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Editar Producto");
+            ventana.show();
+        });
+
         root.getChildren().addAll(
                 titulo,
                 btnEliminarUsuario,
+                btnEditarProducto,
                 btnEliminarProducto,
                 btnRegistrarUsuario,
                 btnAgregarProducto,

@@ -1,6 +1,8 @@
 package service;
 
 import database.Conexion;
+import models.Producto;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -161,6 +163,73 @@ public class ProductoService {
                                 + " - "
                                 + rs.getString("nombre")
                 );
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return productos;
+    }
+
+    public void editarProducto(
+            int id,
+            String nombre,
+            double precio,
+            int stock
+    ) {
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = """
+                UPDATE productos
+                SET nombre = ?, precio = ?, stock = ?
+                WHERE id = ?
+                """;
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, nombre);
+            ps.setDouble(2, precio);
+            ps.setInt(3, stock);
+            ps.setInt(4, id);
+
+            ps.executeUpdate();
+
+            con.close();
+
+            System.out.println("Producto actualizado");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Producto> obtenerProductosTabla() {
+
+        List<Producto> productos = new ArrayList<>();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM productos";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                Producto producto = new Producto();
+
+                producto.setId(rs.getInt("id"));
+                producto.setNombre(rs.getString("nombre"));
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setStock(rs.getInt("stock"));
+
+                productos.add(producto);
             }
 
             con.close();
