@@ -36,6 +36,40 @@ public class ProductoService {
         }
     }
 
+    public String obtenerProductos() {
+
+        StringBuilder productos = new StringBuilder();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM productos";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                productos.append(
+                        rs.getInt("id")
+                                + " - "
+                                + rs.getString("nombre")
+                                + " - $"
+                                + rs.getDouble("precio")
+                                + "\n"
+                );
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(productos.toString());
+        return productos.toString();
+    }
+
     public void agregarProducto(String nombre, double precio, int stock) {
 
         try {
