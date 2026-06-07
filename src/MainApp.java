@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import service.ProductoService;
 import service.UsuarioService;
 import service.PedidoService;
+import javafx.scene.control.TextField;
 
 public class MainApp extends Application {
 
@@ -31,7 +32,9 @@ public class MainApp extends Application {
         Button btnUsuarios = new Button("👤 Ver Usuarios");
         Button btnPedidos = new Button("🛒 Ver Pedidos");
         Button btnRegistrarUsuario = new Button("➕ Registrar Usuario");
+        Button btnAgregarProducto = new Button("➕ Agregar Producto");
 
+        btnAgregarProducto.setPrefWidth(200);
         btnRegistrarUsuario.setPrefWidth(200);
         btnProductos.setPrefWidth(200);
         btnUsuarios.setPrefWidth(200);
@@ -157,9 +160,55 @@ public class MainApp extends Application {
             ventana.show();
         });
 
+        btnAgregarProducto.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootProducto = new VBox(10);
+            rootProducto.setStyle("-fx-padding: 15;");
+
+            TextField txtNombre = new TextField();
+            txtNombre.setPromptText("Nombre");
+
+            TextField txtPrecio = new TextField();
+            txtPrecio.setPromptText("Precio");
+
+            TextField txtStock = new TextField();
+            txtStock.setPromptText("Stock");
+
+            Button btnGuardar = new Button("Guardar Producto");
+
+            btnGuardar.setOnAction(ev -> {
+
+                ProductoService service = new ProductoService();
+
+                service.registrarProducto(
+                        txtNombre.getText(),
+                        Double.parseDouble(txtPrecio.getText()),
+                        Integer.parseInt(txtStock.getText())
+                );
+
+                ventana.close();
+            });
+
+            rootProducto.getChildren().addAll(
+                    txtNombre,
+                    txtPrecio,
+                    txtStock,
+                    btnGuardar
+            );
+
+            Scene scene = new Scene(rootProducto, 300, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Agregar Producto");
+            ventana.show();
+        });
+
         root.getChildren().addAll(
                 titulo,
                 btnRegistrarUsuario,
+                btnAgregarProducto,
                 btnProductos,
                 btnUsuarios,
                 btnPedidos
