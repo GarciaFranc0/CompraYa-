@@ -208,6 +208,63 @@ public class ProductoService {
         }
     }
 
+    public void actualizarStock(int idProducto, int nuevoStock){
+
+        try{
+            Connection con = Conexion.conectar();
+
+            String sql =
+                    "UPDATE productos SET stock = ? WHERE id = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, nuevoStock);
+            ps.setInt(2, idProducto);
+
+            ps.executeUpdate();
+
+            con.close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public Producto buscarPorId(int id) {
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM productos WHERE id = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+
+                Producto producto = new Producto();
+
+                producto.setId(rs.getInt("id"));
+                producto.setNombre(rs.getString("nombre"));
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setStock(rs.getInt("stock"));
+
+                con.close();
+
+                return producto;
+            }
+
+            con.close();
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public List<Producto> obtenerProductosTabla() {
 
         List<Producto> productos = new ArrayList<>();

@@ -16,13 +16,15 @@ public class UsuarioService {
         try {
             Connection con = Conexion.conectar();
 
-            String sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
+            String sql =
+                    "INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)";
 
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, nombre);
             ps.setString(2, email);
             ps.setString(3, password);
+            ps.setString(4, "CLIENTE");
 
             ps.executeUpdate();
 
@@ -213,6 +215,71 @@ public class UsuarioService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Usuario buscarPorEmail(String email) {
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM usuarios WHERE email = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                Usuario usuario = new Usuario();
+
+                usuario.setId(rs.getInt("id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setRol(rs.getString("rol"));
+
+                con.close();
+
+                return usuario;
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean validarLogin(
+            String email,
+            String password
+    ) {
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql =
+                    "SELECT * FROM usuarios WHERE email = ? AND password = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, email);
+            ps.setString(2, password);
+
+            ResultSet rs = ps.executeQuery();
+
+            boolean existe = rs.next();
+
+            con.close();
+
+            return existe;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 }

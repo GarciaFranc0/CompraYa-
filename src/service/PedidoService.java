@@ -106,6 +106,49 @@ public class PedidoService {
         return pedidos.toString();
     }
 
+    public List<Pedido> obtenerPedidosPorUsuario(int idUsuario) {
+
+        List<Pedido> pedidos = new ArrayList<>();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = """
+        SELECT p.id,
+               pr.nombre AS producto,
+               p.cantidad,
+               p.estado
+        FROM pedidos p
+        JOIN productos pr ON p.id_producto = pr.id
+        WHERE p.id_usuario = ?
+        """;
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Pedido pedido = new Pedido();
+
+                pedido.setId(rs.getInt("id"));
+                pedido.setNombreProducto(rs.getString("producto"));
+                pedido.setCantidad(rs.getInt("cantidad"));
+                pedido.setEstado(rs.getString("estado"));
+
+                pedidos.add(pedido);
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pedidos;
+    }
+
     public List<Pedido> obtenerPedidosTabla() {
 
         List<Pedido> pedidos = new ArrayList<>();
