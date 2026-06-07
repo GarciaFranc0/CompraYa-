@@ -1,15 +1,14 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
 import service.ProductoService;
 import service.UsuarioService;
 import service.PedidoService;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Alert;
+
 
 public class MainApp extends Application {
 
@@ -33,7 +32,13 @@ public class MainApp extends Application {
         Button btnPedidos = new Button("🛒 Ver Pedidos");
         Button btnRegistrarUsuario = new Button("➕ Registrar Usuario");
         Button btnAgregarProducto = new Button("➕ Agregar Producto");
+        Button btnCrearPedido = new Button("➕ Crear Pedido");
+        Button btnEliminarProducto = new Button("🗑 Eliminar Producto");
+        Button btnEliminarUsuario = new Button("🗑 Eliminar Usuario");
 
+        btnEliminarUsuario.setPrefWidth(200);
+        btnEliminarProducto.setPrefWidth(200);
+        btnCrearPedido.setPrefWidth(200);
         btnAgregarProducto.setPrefWidth(200);
         btnRegistrarUsuario.setPrefWidth(200);
         btnProductos.setPrefWidth(200);
@@ -142,6 +147,11 @@ public class MainApp extends Application {
                         txtEmail.getText(),
                         txtPassword.getText()
                 );
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Usuario registrado correctamente");
+                alert.showAndWait();
 
                 ventana.close();
             });
@@ -187,6 +197,11 @@ public class MainApp extends Application {
                         Double.parseDouble(txtPrecio.getText()),
                         Integer.parseInt(txtStock.getText())
                 );
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Producto registrado correctamente");
+                alert.showAndWait();
 
                 ventana.close();
             });
@@ -205,10 +220,180 @@ public class MainApp extends Application {
             ventana.show();
         });
 
+        btnCrearPedido.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootPedido = new VBox(10);
+            rootPedido.setStyle("-fx-padding: 15;");
+
+            UsuarioService usuarioService = new UsuarioService();
+            ProductoService productoService = new ProductoService();
+
+            ComboBox<String> cmbUsuarios = new ComboBox<>();
+            cmbUsuarios.setPromptText("Seleccionar Usuario");
+
+            cmbUsuarios.getItems().addAll(
+                    usuarioService.obtenerUsuariosLista()
+            );
+
+            ComboBox<String> cmbProductos = new ComboBox<>();
+            cmbProductos.setPromptText("Seleccionar Producto");
+
+            cmbProductos.getItems().addAll(
+                    productoService.obtenerProductosLista()
+            );
+
+            TextField txtCantidad = new TextField();
+            txtCantidad.setPromptText("Cantidad");
+
+            Button btnGuardar = new Button("Crear Pedido");
+
+            btnGuardar.setOnAction(ev -> {
+
+                PedidoService service = new PedidoService();
+
+                String usuarioSeleccionado = cmbUsuarios.getValue();
+                String productoSeleccionado = cmbProductos.getValue();
+
+                int idUsuario = Integer.parseInt(
+                        usuarioSeleccionado.split(" - ")[0]
+                );
+
+                int idProducto = Integer.parseInt(
+                        productoSeleccionado.split(" - ")[0]
+                );
+
+                service.crearPedido(
+                        idUsuario,
+                        idProducto,
+                        Integer.parseInt(txtCantidad.getText())
+                );
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Pedido creado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootPedido.getChildren().addAll(
+                    cmbUsuarios,
+                    cmbProductos,
+                    txtCantidad,
+                    btnGuardar
+            );
+
+            Scene scene = new Scene(rootPedido, 300, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Crear Pedido");
+            ventana.show();
+        });
+
+        btnEliminarProducto.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEliminar = new VBox(10);
+            rootEliminar.setStyle("-fx-padding: 15;");
+
+            ComboBox<String> cmbProductos = new ComboBox<>();
+            ProductoService service = new ProductoService();
+            cmbProductos.getItems().addAll(
+                    service.obtenerProductosLista()
+            );
+
+            Button btnEliminar = new Button("Eliminar");
+
+            btnEliminar.setOnAction(ev -> {
+
+                String seleccionado = cmbProductos.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.eliminarProducto(id);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Producto eliminado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEliminar.getChildren().addAll(
+                    cmbProductos,
+                    btnEliminar
+            );
+
+            Scene scene = new Scene(rootEliminar, 300, 150);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Eliminar Producto");
+            ventana.show();
+        });
+
+        btnEliminarUsuario.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEliminar = new VBox(10);
+            rootEliminar.setStyle("-fx-padding: 15;");
+
+            UsuarioService service = new UsuarioService();
+
+            ComboBox<String> cmbUsuarios = new ComboBox<>();
+            cmbUsuarios.setPromptText("Seleccionar Usuario");
+
+            cmbUsuarios.getItems().addAll(
+                    service.obtenerUsuariosLista()
+            );
+
+            Button btnEliminar = new Button("Eliminar Usuario");
+
+            btnEliminar.setOnAction(ev -> {
+
+                String seleccionado = cmbUsuarios.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.eliminarUsuario(id);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Usuario eliminado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEliminar.getChildren().addAll(
+                    cmbUsuarios,
+                    btnEliminar
+            );
+
+            Scene scene = new Scene(rootEliminar, 300, 150);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Eliminar Usuario");
+            ventana.show();
+        });
+
         root.getChildren().addAll(
                 titulo,
+                btnEliminarUsuario,
+                btnEliminarProducto,
                 btnRegistrarUsuario,
                 btnAgregarProducto,
+                btnCrearPedido,
                 btnProductos,
                 btnUsuarios,
                 btnPedidos

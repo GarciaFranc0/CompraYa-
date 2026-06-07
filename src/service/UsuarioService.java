@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioService {
 
@@ -90,4 +92,55 @@ public class UsuarioService {
 
         return usuarios.toString();
     }
+
+    public List<String> obtenerUsuariosLista() {
+
+        List<String> usuarios = new ArrayList<>();
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM usuarios";
+
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                usuarios.add(
+                        rs.getInt("id")
+                                + " - "
+                                + rs.getString("nombre")
+                );
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usuarios;
+    }
+
+    public void eliminarUsuario(int id) {
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "DELETE FROM usuarios WHERE id = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
