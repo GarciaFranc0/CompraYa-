@@ -17,6 +17,7 @@ import models.Usuario;
 import models.Pedido;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class MainApp extends Application {
@@ -87,11 +88,22 @@ public class MainApp extends Application {
 
                 UsuarioService service = new UsuarioService();
 
-                service.registrarUsuario(txtNombre.getText(), txtEmailRegistro.getText(), txtPasswordRegistro.getText());
+                if(service.existeEmail(txtEmailRegistro.getText())){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Ya existe un usuario con ese email");
+                    alert.showAndWait();
+
+                    return;
+                }
+
+                service.registrarUsuario(
+                        txtNombre.getText(),
+                        txtEmailRegistro.getText(),
+                        txtPasswordRegistro.getText()
+                );
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
                 alert.setContentText("Usuario registrado correctamente");
                 alert.showAndWait();
 
@@ -629,15 +641,27 @@ public class MainApp extends Application {
 
                 int id = Integer.parseInt(seleccionado.split(" - ")[0]);
 
-                service.eliminarUsuario(id);
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
-                alert.setContentText("Usuario eliminado correctamente");
-                alert.showAndWait();
+                Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
 
-                ventana.close();
+                confirmacion.setTitle("Confirmar");
+                confirmacion.setHeaderText(null);
+                confirmacion.setContentText("¿Seguro que desea eliminar este usuario?");
+
+                Optional<ButtonType> resultado =
+                        confirmacion.showAndWait();
+
+                if(resultado.isPresent()
+                        && resultado.get() == ButtonType.OK){
+
+                    service.eliminarUsuario(id);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setContentText("Usuario eliminado correctamente");
+                    alert.showAndWait();
+
+                    ventana.close();
+                }
             });
 
             rootEliminar.getChildren().addAll(cmbUsuarios, btnEliminar);
@@ -785,17 +809,34 @@ public class MainApp extends Application {
 
                 String seleccionado = cmbProductos.getValue();
 
-                int id = Integer.parseInt(seleccionado.split(" - ")[0]);
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
 
-                service.eliminarProducto(id);
+                Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
-                alert.setContentText("Producto eliminado correctamente");
-                alert.showAndWait();
+                confirmacion.setTitle("Confirmar");
+                confirmacion.setHeaderText(null);
+                confirmacion.setContentText(
+                        "¿Seguro que desea eliminar este producto?"
+                );
 
-                ventana.close();
+                Optional<ButtonType> resultado =
+                        confirmacion.showAndWait();
+
+                if(resultado.isPresent()
+                        && resultado.get() == ButtonType.OK){
+
+                    service.eliminarProducto(id);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Éxito");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Producto eliminado correctamente");
+                    alert.showAndWait();
+
+                    ventana.close();
+                }
             });
 
             rootEliminar.getChildren().addAll(cmbProductos, btnEliminar);

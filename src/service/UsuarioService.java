@@ -238,6 +238,31 @@ public class UsuarioService {
         return 0;
     }
 
+    public boolean existeEmail(String email){
+
+        try{
+            Connection con = Conexion.conectar();
+
+            String sql = "SELECT * FROM usuarios WHERE email = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            boolean existe = rs.next();
+
+            con.close();
+
+            return existe;
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public Usuario buscarPorEmail(String email) {
 
         try {
