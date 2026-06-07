@@ -180,28 +180,33 @@ public class UsuarioService {
             int id,
             String nombre,
             String email,
-            String password,
-            String rol
+            String password
     ) {
 
         try {
             Connection con = Conexion.conectar();
 
             String sql = """
-                UPDATE usuarios
-                SET nombre = ?, email = ?, password = ?, rol = ?
-                WHERE id = ?
-                """;
+            UPDATE usuarios
+            SET nombre = ?, email = ?, password = ?
+            WHERE id = ?
+            """;
 
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, nombre);
             ps.setString(2, email);
             ps.setString(3, password);
-            ps.setString(4, rol);
-            ps.setInt(5, id);
+            ps.setInt(4, id);
 
-            ps.executeUpdate();
+            System.out.println("ID: " + id);
+            System.out.println("Nombre: " + nombre);
+            System.out.println("Email: " + email);
+            System.out.println("Password: " + password);
+
+            int filas = ps.executeUpdate();
+
+            System.out.println("Filas modificadas: " + filas);
 
             con.close();
 

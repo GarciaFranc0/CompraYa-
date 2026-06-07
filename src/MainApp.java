@@ -35,6 +35,10 @@ public class MainApp extends Application {
         Label titulo = new Label("CompraYa");
         titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
+
+        Button btnModuloUsuarios = new Button("👤 Usuarios");
+        Button btnModuloProductos = new Button("📦 Productos");
+        Button btnModuloPedidos = new Button("🛒 Pedidos");
         Button btnProductos = new Button("📦 Ver Productos");
         Button btnUsuarios = new Button("👤 Ver Usuarios");
         Button btnPedidos = new Button("🛒 Ver Pedidos");
@@ -44,7 +48,10 @@ public class MainApp extends Application {
         Button btnEliminarProducto = new Button("🗑 Eliminar Producto");
         Button btnEliminarUsuario = new Button("🗑 Eliminar Usuario");
         Button btnEditarProducto = new Button("✏ Editar Producto");
+        Button btnEditarUsuario = new Button("✏ Editar Usuario");
 
+
+        btnEditarUsuario.setPrefWidth(200);
         btnEditarProducto.setPrefWidth(200);
         btnEliminarUsuario.setPrefWidth(200);
         btnEliminarProducto.setPrefWidth(200);
@@ -54,6 +61,76 @@ public class MainApp extends Application {
         btnProductos.setPrefWidth(200);
         btnUsuarios.setPrefWidth(200);
         btnPedidos.setPrefWidth(200);
+
+        btnModuloUsuarios.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootUsuarios = new VBox(10);
+            rootUsuarios.setStyle(
+                    "-fx-padding: 20;" +
+                            "-fx-alignment: center;"
+            );
+
+            rootUsuarios.getChildren().addAll(
+                    btnUsuarios,
+                    btnRegistrarUsuario,
+                    btnEditarUsuario,
+                    btnEliminarUsuario
+            );
+
+            Scene scene = new Scene(rootUsuarios, 300, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Gestión de Usuarios");
+            ventana.show();
+        });
+
+        btnModuloProductos.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootProductos = new VBox(10);
+            rootProductos.setStyle(
+                    "-fx-padding: 20;" +
+                            "-fx-alignment: center;"
+            );
+
+            rootProductos.getChildren().addAll(
+                    btnProductos,
+                    btnAgregarProducto,
+                    btnEditarProducto,
+                    btnEliminarProducto
+            );
+
+            Scene scene = new Scene(rootProductos, 300, 250);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Gestión de Productos");
+            ventana.show();
+        });
+
+        btnModuloPedidos.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootPedidos = new VBox(10);
+            rootPedidos.setStyle(
+                    "-fx-padding: 20;" +
+                            "-fx-alignment: center;"
+            );
+
+            rootPedidos.getChildren().addAll(
+                    btnPedidos,
+                    btnCrearPedido
+            );
+
+            Scene scene = new Scene(rootPedidos, 300, 200);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Gestión de Pedidos");
+            ventana.show();
+        });
 
         // PRODUCTOS
         btnProductos.setOnAction(e -> {
@@ -374,6 +451,7 @@ public class MainApp extends Application {
                         idProducto,
                         Integer.parseInt(txtCantidad.getText())
                 );
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Éxito");
                 alert.setHeaderText(null);
@@ -433,57 +511,6 @@ public class MainApp extends Application {
 
                 ventana.close();
             });
-
-            rootEliminar.getChildren().addAll(
-                    cmbUsuarios,
-                    btnEliminar
-            );
-
-            Scene scene = new Scene(rootEliminar, 300, 150);
-
-            ventana.setScene(scene);
-            ventana.setTitle("Eliminar Usuario");
-            ventana.show();
-        });
-
-        btnEliminarUsuario.setOnAction(e -> {
-
-            Stage ventana = new Stage();
-
-            VBox rootEliminar = new VBox(10);
-            rootEliminar.setStyle("-fx-padding: 15;");
-
-            UsuarioService service = new UsuarioService();
-
-            ComboBox<String> cmbUsuarios = new ComboBox<>();
-            cmbUsuarios.setPromptText("Seleccionar Usuario");
-
-            cmbUsuarios.getItems().addAll(
-                    service.obtenerUsuariosLista()
-            );
-
-            Button btnEliminar = new Button("Eliminar Usuario");
-
-            btnEliminar.setOnAction(ev -> {
-
-                String seleccionado = cmbUsuarios.getValue();
-
-                int id = Integer.parseInt(
-                        seleccionado.split(" - ")[0]
-                );
-
-                service.eliminarUsuario(id);
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Éxito");
-                alert.setHeaderText(null);
-                alert.setContentText("Usuario eliminado correctamente");
-                alert.showAndWait();
-
-                ventana.close();
-            });
-
-
 
             rootEliminar.getChildren().addAll(
                     cmbUsuarios,
@@ -563,17 +590,126 @@ public class MainApp extends Application {
             ventana.show();
         });
 
+        btnEditarUsuario.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEditar = new VBox(10);
+            rootEditar.setStyle("-fx-padding: 15;");
+
+            UsuarioService service = new UsuarioService();
+
+            ComboBox<String> cmbUsuarios = new ComboBox<>();
+            cmbUsuarios.setPromptText("Seleccionar Usuario");
+
+            cmbUsuarios.getItems().addAll(
+                    service.obtenerUsuariosLista()
+            );
+
+            TextField txtNombre = new TextField();
+            txtNombre.setPromptText("Nuevo Nombre");
+
+            TextField txtEmail = new TextField();
+            txtEmail.setPromptText("Nuevo Email");
+
+            TextField txtPassword = new TextField();
+            txtPassword.setPromptText("Nuevo Password");
+
+            Button btnGuardar = new Button("Guardar Cambios");
+
+            btnGuardar.setOnAction(ev -> {
+
+                String seleccionado = cmbUsuarios.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.editarUsuario(
+                        id,
+                        txtNombre.getText(),
+                        txtEmail.getText(),
+                        txtPassword.getText()
+                );
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Usuario actualizado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEditar.getChildren().addAll(
+                    cmbUsuarios,
+                    txtNombre,
+                    txtEmail,
+                    txtPassword,
+                    btnGuardar
+            );
+
+            Scene scene = new Scene(rootEditar, 350, 300);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Editar Usuario");
+            ventana.show();
+        });
+
+        btnEliminarProducto.setOnAction(e -> {
+
+            Stage ventana = new Stage();
+
+            VBox rootEliminar = new VBox(10);
+            rootEliminar.setStyle("-fx-padding: 15;");
+
+            ProductoService service = new ProductoService();
+
+            ComboBox<String> cmbProductos = new ComboBox<>();
+            cmbProductos.setPromptText("Seleccionar Producto");
+
+            cmbProductos.getItems().addAll(
+                    service.obtenerProductosLista()
+            );
+
+            Button btnEliminar = new Button("Eliminar Producto");
+
+            btnEliminar.setOnAction(ev -> {
+
+                String seleccionado = cmbProductos.getValue();
+
+                int id = Integer.parseInt(
+                        seleccionado.split(" - ")[0]
+                );
+
+                service.eliminarProducto(id);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Éxito");
+                alert.setHeaderText(null);
+                alert.setContentText("Producto eliminado correctamente");
+                alert.showAndWait();
+
+                ventana.close();
+            });
+
+            rootEliminar.getChildren().addAll(
+                    cmbProductos,
+                    btnEliminar
+            );
+
+            Scene scene = new Scene(rootEliminar, 300, 150);
+
+            ventana.setScene(scene);
+            ventana.setTitle("Eliminar Producto");
+            ventana.show();
+        });
+
         root.getChildren().addAll(
                 titulo,
-                btnEliminarUsuario,
-                btnEditarProducto,
-                btnEliminarProducto,
-                btnRegistrarUsuario,
-                btnAgregarProducto,
-                btnCrearPedido,
-                btnProductos,
-                btnUsuarios,
-                btnPedidos
+                btnModuloUsuarios,
+                btnModuloProductos,
+                btnModuloPedidos
         );
 
         Scene scene = new Scene(root, 600, 400);
