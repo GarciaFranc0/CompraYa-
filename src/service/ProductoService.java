@@ -2,6 +2,7 @@ package service;
 
 import database.Conexion;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -27,6 +28,30 @@ public class ProductoService {
                                 rs.getInt("stock")
                 );
             }
+
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void agregarProducto(String nombre, double precio, int stock) {
+
+        try {
+            Connection con = Conexion.conectar();
+
+            String sql = "INSERT INTO productos(nombre, precio, stock) VALUES(?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, nombre);
+            ps.setDouble(2, precio);
+            ps.setInt(3, stock);
+
+            ps.executeUpdate();
+
+            System.out.println("Producto agregado");
 
             con.close();
 
