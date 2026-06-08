@@ -430,6 +430,13 @@ public class MainApp extends Application {
                 }
 
                 service.registrarUsuario(txtNombre.getText(), txtEmail.getText(), txtPassword.getText());
+
+                actualizarContadores(
+                        lblUsuarios,
+                        lblProductos,
+                        lblPedidos
+                );
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Éxito");
                 alert.setHeaderText(null);
@@ -594,6 +601,13 @@ public class MainApp extends Application {
                         precio,
                         stock
                 );
+
+                actualizarContadores(
+                        lblUsuarios,
+                        lblProductos,
+                        lblPedidos
+                );
+
                 System.out.println("Producto guardado");
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -651,8 +665,6 @@ public class MainApp extends Application {
 
                 int idProducto = Integer.parseInt(productoSeleccionado.split(" - ")[0]);
 
-                service.crearPedido(idUsuario, idProducto, Integer.parseInt(txtCantidad.getText()));
-
                 Producto producto = productoService.buscarPorId(idProducto);
 
                 int cantidad = Integer.parseInt(txtCantidad.getText());
@@ -667,6 +679,12 @@ public class MainApp extends Application {
                 }
 
                 service.crearPedido(idUsuario, idProducto, cantidad);
+
+                actualizarContadores(
+                        lblUsuarios,
+                        lblProductos,
+                        lblPedidos
+                );
 
                 productoService.actualizarStock(
                         idProducto,
@@ -731,6 +749,12 @@ public class MainApp extends Application {
                         && resultado.get() == ButtonType.OK){
 
                     service.eliminarUsuario(id);
+
+                    actualizarContadores(
+                            lblUsuarios,
+                            lblProductos,
+                            lblPedidos
+                    );
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText("Usuario eliminado correctamente");
@@ -904,6 +928,12 @@ public class MainApp extends Application {
                         && resultado.get() == ButtonType.OK){
 
                     service.eliminarProducto(id);
+
+                    actualizarContadores(
+                            lblUsuarios,
+                            lblProductos,
+                            lblPedidos
+                    );
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Éxito");
@@ -1177,6 +1207,25 @@ public class MainApp extends Application {
         ventana.setScene(scene);
         ventana.setTitle("Mis Pedidos");
         ventana.show();
+    }
+
+    private void actualizarContadores(
+            Label lblUsuarios,
+            Label lblProductos,
+            Label lblPedidos) {
+
+        UsuarioService usuarioService = new UsuarioService();
+        ProductoService productoService = new ProductoService();
+        PedidoService pedidoService = new PedidoService();
+
+        lblUsuarios.setText("Usuarios: " +
+                usuarioService.contarUsuarios());
+
+        lblProductos.setText("Productos: " +
+                productoService.contarProductos());
+
+        lblPedidos.setText("Pedidos: " +
+                pedidoService.contarPedidos());
     }
 
 

@@ -188,7 +188,7 @@ public class PedidoService {
 
                 pedidos.add(pedido);
             }
-
+            System.out.println("FILAS TABLA: " + pedidos.size());
             rs.close();
             st.close();
             con.close();
@@ -237,6 +237,8 @@ public class PedidoService {
             if(rs.next()){
                 total = rs.getInt(1);
             }
+
+            System.out.println("TOTAL PEDIDOS: " + total);
 
             rs.close();
             st.close();
