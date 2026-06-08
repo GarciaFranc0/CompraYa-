@@ -409,6 +409,26 @@ public class MainApp extends Application {
 
                 UsuarioService service = new UsuarioService();
 
+                if(txtNombre.getText().isBlank()
+                        || txtEmail.getText().isBlank()
+                        || txtPassword.getText().isBlank()){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Complete todos los campos");
+                    alert.showAndWait();
+
+                    return;
+                }
+
+                if(!txtEmail.getText().contains("@")){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Ingrese un email válido");
+                    alert.showAndWait();
+
+                    return;
+                }
+
                 service.registrarUsuario(txtNombre.getText(), txtEmail.getText(), txtPassword.getText());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Éxito");
@@ -539,7 +559,43 @@ public class MainApp extends Application {
 
                 ProductoService service = new ProductoService();
 
-                service.registrarProducto(txtNombre.getText(), Double.parseDouble(txtPrecio.getText()), Integer.parseInt(txtStock.getText()));
+                if(txtNombre.getText().isBlank() || txtPrecio.getText().isBlank() || txtStock.getText().isBlank()){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Complete todos los campos");
+                    alert.showAndWait();
+
+                    return;
+                }
+                double precio = Double.parseDouble(txtPrecio.getText());
+                int stock = Integer.parseInt(txtStock.getText());
+
+                if(stock < 0){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("El stock no puede ser negativo");
+                    alert.showAndWait();
+
+                    return;
+                }
+                if(precio <= 0){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("El precio debe ser mayor a 0");
+                    alert.showAndWait();
+
+                    return;
+                }
+
+                System.out.println("Guardando producto...");
+
+                service.registrarProducto(
+                        txtNombre.getText(),
+                        precio,
+                        stock
+                );
+                System.out.println("Producto guardado");
+
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Éxito");
                 alert.setHeaderText(null);
@@ -596,6 +652,26 @@ public class MainApp extends Application {
                 int idProducto = Integer.parseInt(productoSeleccionado.split(" - ")[0]);
 
                 service.crearPedido(idUsuario, idProducto, Integer.parseInt(txtCantidad.getText()));
+
+                Producto producto = productoService.buscarPorId(idProducto);
+
+                int cantidad = Integer.parseInt(txtCantidad.getText());
+
+                if(cantidad > producto.getStock()){
+
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("No hay stock suficiente");
+                    alert.showAndWait();
+
+                    return;
+                }
+
+                service.crearPedido(idUsuario, idProducto, cantidad);
+
+                productoService.actualizarStock(
+                        idProducto,
+                        producto.getStock() - cantidad
+                );
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Éxito");

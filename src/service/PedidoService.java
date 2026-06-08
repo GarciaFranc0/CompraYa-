@@ -32,6 +32,7 @@ public class PedidoService {
 
             System.out.println("Pedido creado");
 
+            ps.close();
             con.close();
 
         } catch (Exception e) {
@@ -60,6 +61,8 @@ public class PedidoService {
                 );
             }
 
+            rs.close();
+            st.close(); // o ps.close()
             con.close();
 
         } catch (Exception e) {
@@ -96,6 +99,8 @@ public class PedidoService {
                 );
             }
 
+            rs.close();
+            st.close(); // o ps.close()
             con.close();
 
         } catch (Exception e) {
@@ -139,6 +144,8 @@ public class PedidoService {
                 pedidos.add(pedido);
             }
 
+            rs.close();
+            ps.close();
             con.close();
 
         } catch (Exception e) {
@@ -182,6 +189,8 @@ public class PedidoService {
                 pedidos.add(pedido);
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -206,6 +215,7 @@ public class PedidoService {
 
             ps.executeUpdate();
 
+            ps.close();
             con.close();
 
         }catch(Exception e){
@@ -222,9 +232,17 @@ public class PedidoService {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
+            int total = 0;
+
             if(rs.next()){
-                return rs.getInt(1);
+                total = rs.getInt(1);
             }
+
+            rs.close();
+            st.close();
+            con.close();
+
+            return total;
 
         }catch(Exception e){
             e.printStackTrace();

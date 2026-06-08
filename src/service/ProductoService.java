@@ -33,6 +33,8 @@ public class ProductoService {
                 );
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -64,6 +66,8 @@ public class ProductoService {
                 );
             }
 
+            rs.close();
+            st.close(); // o ps.close()
             con.close();
 
         } catch (Exception e) {
@@ -75,7 +79,7 @@ public class ProductoService {
     }
 
     public void agregarProducto(String nombre, double precio, int stock) {
-
+        System.out.println("ENTRO A agregarProducto");
         try {
             Connection con = Conexion.conectar();
 
@@ -91,6 +95,7 @@ public class ProductoService {
 
             System.out.println("Producto agregado");
 
+            ps.close();
             con.close();
 
         } catch (Exception e) {
@@ -99,7 +104,7 @@ public class ProductoService {
     }
 
     public void registrarProducto(String nombre, double precio, int stock) {
-
+        System.out.println("ENTRO A registrarProducto");
         try {
             Connection con = Conexion.conectar();
 
@@ -111,10 +116,13 @@ public class ProductoService {
             ps.setDouble(2, precio);
             ps.setInt(3, stock);
 
-            ps.executeUpdate();
+            int filas = ps.executeUpdate();
 
-            System.out.println("Producto registrado");
+            if (filas > 0) {
+                System.out.println("Producto registrado");
+            }
 
+            ps.close();
             con.close();
 
         } catch (Exception e) {
@@ -135,6 +143,7 @@ public class ProductoService {
 
             ps.executeUpdate();
 
+            ps.close();
             con.close();
 
             System.out.println("Producto eliminado");
@@ -165,6 +174,8 @@ public class ProductoService {
                 );
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -223,6 +234,7 @@ public class ProductoService {
 
             ps.executeUpdate();
 
+            ps.close();
             con.close();
 
         }catch(Exception e){
@@ -240,9 +252,17 @@ public class ProductoService {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
+            int total = 0;
+
             if(rs.next()){
-                return rs.getInt(1);
+                total = rs.getInt(1);
             }
+
+            rs.close();
+            st.close();
+            con.close();
+
+            return total;
 
         }catch(Exception e){
             e.printStackTrace();
@@ -272,11 +292,15 @@ public class ProductoService {
                 producto.setPrecio(rs.getDouble("precio"));
                 producto.setStock(rs.getInt("stock"));
 
+                rs.close();
+                ps.close();
                 con.close();
 
                 return producto;
             }
 
+            rs.close();
+            ps.close();
             con.close();
 
         } catch(Exception e){
@@ -309,7 +333,8 @@ public class ProductoService {
 
                 productos.add(producto);
             }
-
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {

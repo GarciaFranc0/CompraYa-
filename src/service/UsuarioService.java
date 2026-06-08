@@ -56,6 +56,8 @@ public class UsuarioService {
                 );
             }
 
+            rs.close();
+            st.close(); // o ps.close()
             con.close();
 
         } catch (Exception e) {
@@ -87,6 +89,8 @@ public class UsuarioService {
                 );
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -117,6 +121,8 @@ public class UsuarioService {
                 );
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -169,6 +175,8 @@ public class UsuarioService {
                 usuarios.add(usuario);
             }
 
+            rs.close();
+            st.close();
             con.close();
 
         } catch (Exception e) {
@@ -227,9 +235,17 @@ public class UsuarioService {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
+            int total = 0;
+
             if(rs.next()){
-                return rs.getInt(1);
+                total = rs.getInt(1);
             }
+
+            rs.close();
+            st.close();
+            con.close();
+
+            return total;
 
         }catch(Exception e){
             e.printStackTrace();
@@ -252,6 +268,8 @@ public class UsuarioService {
 
             boolean existe = rs.next();
 
+            rs.close();
+            ps.close();
             con.close();
 
             return existe;
@@ -284,11 +302,15 @@ public class UsuarioService {
                 usuario.setEmail(rs.getString("email"));
                 usuario.setRol(rs.getString("rol"));
 
+                rs.close();
+                ps.close();
                 con.close();
 
                 return usuario;
             }
 
+            rs.close();
+            ps.close();
             con.close();
 
         } catch (Exception e) {
@@ -317,6 +339,8 @@ public class UsuarioService {
 
             boolean existe = rs.next();
 
+            rs.close();
+            ps.close();
             con.close();
 
             return existe;
