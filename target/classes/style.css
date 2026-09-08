@@ -1,0 +1,32 @@
+.root{
+    -fx-background-color: #f4f6f9;
+}
+
+.label{
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.button{
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.button:hover{
+    -fx-background-color: #1d4ed8;
+}
+
+.text-field,
+.password-field,
+.combo-box{
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.table-view{
+    -fx-background-radius: 10;
+}
